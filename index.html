@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AstroTalk24 - Spiritual Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Epilogue', 'sans-serif'],
+                        serif: ['Epilogue', 'serif'],
+                    },
+                    colors: {
+                        'brand-yellow': '#ffc700',
+                        'brand-yellow-dark': '#f5b800',
+                        'brand-yellow-light': '#fefce8',
+                        'brand-gold': '#B8860B',
+                        'brand-pink-light': '#fff0f0',
+                        'brand-red': '#ff5a5f',
+                        'brand-text-dark': '#333333',
+                        'brand-text-light': '#6b7280',
+                        'brand-bg-white': '#ffffff',
+                        'brand-bg-main': '#f9fafb',
+                        'brand-green': '#34c759',
+                         // For compatibility with other pages
+                        'brand': {
+                          'primary': '#ffc700',
+                          'secondary': '#f5b800',
+                          'background': '#f9fafb',
+                          'surface': '#ffffff',
+                          'card': '#ffffff',
+                          'text-primary': '#333333',
+                          'text-secondary': '#6b7280',
+                          'accent': '#ff5a5f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+      .marquee {
+        white-space: nowrap;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+      .marquee span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: marquee 15s linear infinite;
+      }
+      @keyframes marquee {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(-100%, 0); }
+      }
+      .snap-x {
+        scroll-snap-type: x mandatory;
+      }
+      .snap-start {
+        scroll-snap-align: start;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .chant-glow-scale {
+        animation: chant-glow-scale 1.2s ease-in-out forwards;
+      }
+      @keyframes chant-glow-scale {
+        0% { transform: scale(0) rotate(0deg); box-shadow: 0 0 0 0 rgba(255, 90, 95, 0); }
+        50% { transform: scale(1.1) rotate(-10deg); box-shadow: 0 0 15px 5px rgba(255, 90, 95, 0.7); }
+        100% { transform: scale(0) rotate(0deg); box-shadow: 0 0 0 0 rgba(255, 90, 95, 0); }
+      }
+      .chant-ripple {
+        animation: chant-ripple 1.2s ease-out forwards;
+        opacity: 0;
+      }
+      @keyframes chant-ripple {
+        0% { transform: scale(0.5); opacity: 1; }
+        100% { transform: scale(2.5); opacity: 0; }
+      }
+      /* Mantra Chanting Animation */
+      .chant-tap-effect {
+        animation: chant-tap-animation 0.5s ease-out forwards;
+      }
+      @keyframes chant-tap-animation {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 199, 0, 0.7); }
+        50% { transform: scale(0.95); box-shadow: 0 0 20px 10px rgba(255, 199, 0, 0.3); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 199, 0, 0); }
+      }
+      /* Basic prose styles for markdown rendering */
+      .prose {
+        color: #333333;
+        line-height: 1.6;
+      }
+      .prose strong {
+        color: #111827;
+        font-weight: 600;
+      }
+      .prose ul {
+        list-style-type: disc;
+        padding-left: 1.5em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+      .prose li {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+      }
+      .prose p {
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+      .prose h1, .prose h2, .prose h3, .prose h4 {
+        font-weight: 700;
+        margin-bottom: 0.5em;
+        margin-top: 1.5em;
+      }
+      /* Tarot Card Flip Animation */
+      .tarot-card-container {
+        perspective: 1000px;
+      }
+      .tarot-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+      .tarot-card-container.flipped .tarot-card-inner {
+        transform: rotateY(180deg);
+      }
+      .tarot-card-front, .tarot-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 0.75rem; /* 12px */
+        overflow: hidden;
+      }
+      .tarot-card-back {
+        transform: rotateY(180deg);
+      }
+      /* Flower Petal Animation */
+      @keyframes fall-and-sway {
+        0% {
+          top: -10%;
+          transform: translateX(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          top: 110%;
+          transform: translateX(var(--sway-amount)) rotate(var(--rotation-amount));
+          opacity: 0.8;
+        }
+      }
+      .flower-petal {
+        animation: fall-and-sway linear infinite;
+        position: absolute;
+        top: -10%;
+        font-size: 24px;
+        color: #ff5a5f;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.8.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.13.0",
+    "react-markdown": "https://esm.sh/react-markdown@^9.0.0",
+    "remark-gfm": "https://esm.sh/remark-gfm@^4.0.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-brand-bg-main font-sans text-brand-text-dark antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

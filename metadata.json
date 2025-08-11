@@ -1,0 +1,8 @@
+{
+  "name": "AstroTalk24 - Spiritual Guidance",
+  "description": "A spiritual guidance and commerce platform combining astrology, live interactions, devotional music, ritual services, and a sacred store.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
