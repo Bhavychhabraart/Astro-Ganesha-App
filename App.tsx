@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { MusicPlayerProvider } from './contexts/MusicPlayerContext';
+import { MusicPlayerProvider } from './contexts/MusicPlayerContext.tsx';
 import { useMusicPlayer } from './hooks/useMusicPlayer';
 import { CartProvider } from './contexts/CartContext';
 
