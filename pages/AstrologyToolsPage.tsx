@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -62,4 +60,14 @@ export const AstrologyToolsPage: React.FC = () => {
     return (
         <div>
             <header className="mb-8">
-                <h1 className="font-serif text-4xl sm:text-5xl font-bold text-brand-text-primary mb-2">Astrology Readings
+                <h1 className="font-serif text-4xl sm:text-5xl font-bold text-brand-text-primary mb-2">Astrology Readings</h1>
+                <p className="text-lg text-brand-text-secondary">Explore our suite of AI-powered and traditional astrology tools.</p>
+            </header>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {toolLinks.map(tool => (
+                    <ToolCard key={tool.to} {...tool} />
+                ))}
+            </div>
+        </div>
+    );
+};
