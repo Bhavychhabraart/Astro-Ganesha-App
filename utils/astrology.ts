@@ -15,6 +15,9 @@ const VASHYAS = ['Dwipad', 'Chatushpad', 'Jalchar', 'Vanachar', 'Keet'] as const
 const NADIS = ['Adi', 'Madhya', 'Antya'] as const;
 const AYANAMSA = ['Lahiri', 'Raman', 'KP'];
 
+const API_KEY_ERROR_MESSAGE = "The 'API_KEY' environment variable was not found. Please ensure it is configured in your deployment environment (e.g., in your Vercel project settings).";
+
+
 const randomElement = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
 const generatePlanetaryPositions = (ascendantRashi: Rashi): PlanetPosition[] => {
@@ -135,7 +138,7 @@ const getAiInsights = async (baseData: KundliData, formData: KundliFormInput): P
     if (!process.env.API_KEY) {
         console.error("API_KEY environment variable not set.");
         return {
-            generalCharacteristics: "AI insights could not be generated. Please configure the API key.",
+            generalCharacteristics: `AI insights could not be generated. ${API_KEY_ERROR_MESSAGE}`,
             predictions: { yearly: [], monthly: [] },
             lifePhases: [],
             remedies: [],
@@ -315,13 +318,13 @@ const generateBasicKundliInfo = (formData: KundliFormInput) => {
 };
 
 export const generateMatchmakingReport = async (formData: MatchmakingFormInput): Promise<MatchmakingReportData> => {
+    if (!process.env.API_KEY) {
+        throw new Error(API_KEY_ERROR_MESSAGE);
+    }
+    
     const boyInfo = generateBasicKundliInfo(formData.boy);
     const girlInfo = generateBasicKundliInfo(formData.girl);
 
-    if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
-    }
-    
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const model = 'gemini-2.5-flash';
 
@@ -413,7 +416,7 @@ export const generateMatchmakingReport = async (formData: MatchmakingFormInput):
 
 export const generateLoveReport = async (formData: LoveFormInput): Promise<LoveReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -471,7 +474,7 @@ export const generateLoveReport = async (formData: LoveFormInput): Promise<LoveR
 
 export const generateMoneyReport = async (formData: MoneyFormInput): Promise<MoneyReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -546,7 +549,7 @@ export const generateMoneyReport = async (formData: MoneyFormInput): Promise<Mon
 
 export const generateLaalKitabReport = async (formData: LaalKitabFormInput): Promise<LaalKitabReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+       throw new Error(API_KEY_ERROR_MESSAGE);
     }
     
     // Mock planet distribution for the prompt
@@ -669,17 +672,7 @@ export const generateLaalKitabReport = async (formData: LaalKitabFormInput): Pro
 
     } catch (error) {
         console.error("Error fetching AI Laal Kitab report:", error);
-        return {
-            introduction: "Failed to generate AI report.",
-            kundliChakra: kundliChakra,
-            planetaryAnalysis: [],
-            planetStatus: [],
-            ancestralDebts: [],
-            keyPlanets: { benefic: [], malefic: [] },
-            varshphal: { currentYear: currentYear, rulingPlanet: 'Sun', overall: 'Could not generate forecast.', career: '', health: '', relationships: ''},
-            remedies: [],
-            conclusion: "Please try again later."
-        };
+        throw new Error("Failed to generate Laal Kitab report from AI.");
     }
 };
 
@@ -700,7 +693,7 @@ const calculateLifePathNumber = (dob: string): number => {
         let sum = num;
         while (sum > 9) {
             sum = sumDigits(sum.toString());
-            if (sum === 11 || sum === 22 || sum === 33) {
+            if (sum === 11 || num === 22 || num === 33) {
                 return sum;
             }
         }
@@ -719,7 +712,7 @@ const calculateLifePathNumber = (dob: string): number => {
 
 export const generateLifePathReport = async (formData: LifePathFormInput): Promise<LifePathReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
     
     const lifePathNumber = calculateLifePathNumber(formData.dob);
@@ -774,7 +767,7 @@ export const generateLifePathReport = async (formData: LifePathFormInput): Promi
 
 export const generateDailyHoroscope = async (sign: Rashi): Promise<DailyHoroscopeData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -822,7 +815,7 @@ export const generateDailyHoroscope = async (sign: Rashi): Promise<DailyHoroscop
 // --- Numerology Functions ---
 export const generateNumerologyReport = async (formData: NumerologyFormInput): Promise<NumerologyReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -913,8 +906,12 @@ export const getSunSign = (dob: string): { sign: Rashi, dateRange: string } => {
 // --- Muhurat Teller Function ---
 
 export const generateMuhuratReport = async (formData: MuhuratFormInput): Promise<MuhuratReportData> => {
-    if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+     if (!process.env.API_KEY) {
+        return {
+            activity: formData.activity,
+            summary: `AI report could not be generated. ${API_KEY_ERROR_MESSAGE}`,
+            muhurats: [],
+        };
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -980,7 +977,7 @@ export const generateMuhuratReport = async (formData: MuhuratFormInput): Promise
 // --- Palm Reading Function ---
 export const generatePalmReadingReport = async (base64Image: string): Promise<PalmReadingReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -1058,7 +1055,7 @@ export const generatePalmReadingReport = async (base64Image: string): Promise<Pa
 // --- Face Reading Function ---
 export const generateFaceReadingReport = async (base64Image: string): Promise<FaceReadingReportData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -1126,7 +1123,7 @@ export const generateFaceReadingReport = async (base64Image: string): Promise<Fa
 // --- Tarot Reading Function ---
 export const generateTarotReading = async (cards: { card: TarotCardData, position: string }[]): Promise<TarotReadingData> => {
     if (!process.env.API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });

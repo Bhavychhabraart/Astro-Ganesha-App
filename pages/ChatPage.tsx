@@ -28,9 +28,10 @@ export const ChatPage: React.FC = () => {
         if (!astrologer) return;
 
         const initializeChat = async () => {
+            const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
             try {
                 if (!process.env.API_KEY) {
-                    throw new Error("API_KEY is not configured.");
+                    throw new Error("API_KEY_MISSING");
                 }
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 
@@ -69,10 +70,11 @@ export const ChatPage: React.FC = () => {
                 
             } catch (err) {
                 console.error("Chat initialization error:", err);
+                const isApiKeyError = (err as Error).message === "API_KEY_MISSING";
                 setMessages([{
                     id: Date.now(),
                     sender: 'ai',
-                    text: 'Sorry, I am unable to connect right now. Please try again later.'
+                    text: isApiKeyError ? API_KEY_ERROR_MESSAGE : 'Sorry, I am unable to connect right now. Please try again later.'
                 }]);
             } finally {
                 setIsLoading(false);
@@ -186,9 +188,9 @@ export const ChatPage: React.FC = () => {
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type your message..."
                         className="flex-1 p-3 bg-brand-card border-none rounded-full focus:ring-2 focus:ring-brand-primary focus:outline-none transition"
-                        disabled={isLoading}
+                        disabled={isLoading || !chat}
                     />
-                    <button type="submit" className="p-3 bg-brand-primary text-black rounded-full hover:bg-brand-accent transition-colors shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed" disabled={!input.trim() || isLoading}>
+                    <button type="submit" className="p-3 bg-brand-primary text-black rounded-full hover:bg-brand-accent transition-colors shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed" disabled={!input.trim() || isLoading || !chat}>
                         <SendIcon className="w-6 h-6" />
                     </button>
                 </form>
