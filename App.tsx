@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { MusicPlayerProvider } from './contexts/MusicPlayerContext';
@@ -53,6 +52,7 @@ import { PalmReaderPage } from './pages/PalmReaderPage';
 import { FaceReaderPage } from './pages/FaceReaderPage';
 import { TarotReadingPage } from './pages/TarotReadingPage';
 import { InteractivePoojaPage } from './pages/InteractivePoojaPage';
+import { QuietMeditationPage } from './pages/QuietMeditationPage';
 
 
 import { Header } from './components/layout/Header';
@@ -72,7 +72,9 @@ const AppContent: React.FC = () => {
                             location.pathname === '/customer-support' ||
                             location.pathname === '/gemstone-consultation';
     
-    const isImmersiveInterface = location.pathname.startsWith('/call/') || location.pathname.startsWith('/interactive-pooja');
+    const isImmersiveInterface = location.pathname.startsWith('/call/') || 
+                                 location.pathname.startsWith('/interactive-pooja') ||
+                                 location.pathname === '/quiet-meditation';
 
     const showHeader = !isMusicPlayerPage && !isImmersiveInterface;
     const showBottomNav = !isMusicPlayerPage && !isChatInterface && !isImmersiveInterface;
@@ -95,6 +97,7 @@ const AppContent: React.FC = () => {
              <Routes>
                 <Route path="/call/:id" element={<CallPage />} />
                 <Route path="/interactive-pooja" element={<InteractivePoojaPage />} />
+                <Route path="/quiet-meditation" element={<QuietMeditationPage />} />
              </Routes>
         );
     }

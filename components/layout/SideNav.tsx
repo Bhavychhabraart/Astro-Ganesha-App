@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
@@ -37,6 +38,7 @@ import {
     ScanFaceIcon,
     TarotIcon,
     PoojaThaliIcon,
+    JapaMalaIcon,
 } from '../Icons';
 
 interface SideNavProps {
@@ -131,6 +133,7 @@ export const SideNav: React.FC<SideNavProps> = ({ isOpen, onClose }) => {
                             <NavItem to="/gemstone-consultation" icon={GemstoneIcon} label="Gemstone Guide" onClick={onClose} />
                             <NavItem to="/poojas" icon={DiyaIcon} label="Book a Pooja" onClick={onClose} />
                             <NavItem to="/interactive-pooja" icon={PoojaThaliIcon} label="Interactive Pooja" onClick={onClose} />
+                            <NavItem to="/quiet-meditation" icon={JapaMalaIcon} label="Mantra Chanting" onClick={onClose} />
                             <NavItem to="/spells" icon={SparkleIcon} label="Spells" onClick={onClose} />
                             <NavItem to="/laalkitab" icon={LaalKitabIcon} label="Remedies" onClick={onClose} />
                         </NavSection>

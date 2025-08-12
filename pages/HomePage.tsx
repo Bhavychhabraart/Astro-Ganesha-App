@@ -20,7 +20,8 @@ import {
     DiyaIcon,
     SparkleIcon,
     AiPanditIcon,
-    PoojaThaliIcon
+    PoojaThaliIcon,
+    JapaMalaIcon
 } from '../components/Icons';
 
 const TopLink: React.FC<{ icon: React.FC<any>, label: string, to: string }> = ({ icon: Icon, label, to }) => (
@@ -202,6 +203,14 @@ export const HomePage: React.FC = () => {
                     to="/spells"
                     color="text-brand-gold"
                     bgColor="bg-brand-yellow-light"
+                />
+                <ServiceCard 
+                    icon={JapaMalaIcon}
+                    title="Mantra Chanting"
+                    desc="A quiet space for meditation"
+                    to="/quiet-meditation"
+                    color="text-purple-600"
+                    bgColor="bg-purple-50"
                 />
                 <ServiceCard 
                     icon={PoojaThaliIcon}

@@ -28,12 +28,12 @@ export const ChatPage: React.FC = () => {
         if (!astrologer) return;
 
         const initializeChat = async () => {
-            const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+            const API_KEY_ERROR_MESSAGE = "I am unable to connect at this time. Please try again later.";
             try {
-                if (!process.env.VITE_API_KEY) {
+                if (!process.env.API_KEY) {
                     throw new Error("API_KEY_MISSING");
                 }
-                const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
+                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 
                 const systemInstruction = `You are ${astrologer.name}, a famous astrologer with expertise in ${astrologer.specialties.join(' & ')}. Your bio is: "${astrologer.bio}". 
                 You are talking to a user seeking guidance.

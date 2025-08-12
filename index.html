@@ -171,6 +171,17 @@
         font-size: 24px;
         color: #ff5a5f;
       }
+      /* Animated Gradient Background */
+      @keyframes gradient-bg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .animated-gradient {
+        background: linear-gradient(-45deg, #fff0f0, #fefce8, #e0f2fe, #f3e8ff);
+        background-size: 400% 400%;
+        animation: gradient-bg 15s ease infinite;
+      }
     </style>
 <script type="importmap">
 {

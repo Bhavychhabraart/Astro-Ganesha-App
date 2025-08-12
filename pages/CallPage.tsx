@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ASTROLOGERS } from '../constants';
@@ -77,12 +76,12 @@ export const CallPage: React.FC = () => {
     // Initialize Gemini Chat and Speech Recognition
     useEffect(() => {
         callActiveRef.current = true;
-        if (!astrologer || !process.env.VITE_API_KEY) {
+        if (!astrologer || !process.env.API_KEY) {
             setStatus('error');
             return;
         }
 
-        const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const systemInstruction = `You are ${astrologer.name}, a famous astrologer with expertise in ${astrologer.specialties.join(' & ')}. Your bio is: "${astrologer.bio}". You are on a voice call with a user seeking guidance. Your personality is wise, empathetic, and friendly. YOU MUST CONVERSE ONLY IN HINGLISH (a mix of Hindi and English). Do not reveal you are an AI. You are the human astrologer. Keep your responses conversational and of a length suitable for a phone call. After your initial greeting, wait for the user to speak.`;
         
         chatRef.current = ai.chats.create({
