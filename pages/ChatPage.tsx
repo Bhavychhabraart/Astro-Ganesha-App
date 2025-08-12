@@ -28,12 +28,12 @@ export const ChatPage: React.FC = () => {
         if (!astrologer) return;
 
         const initializeChat = async () => {
-            const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+            const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
             try {
-                if (!process.env.API_KEY) {
+                if (!process.env.VITE_API_KEY) {
                     throw new Error("API_KEY_MISSING");
                 }
-                const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
                 
                 const systemInstruction = `You are ${astrologer.name}, a famous astrologer with expertise in ${astrologer.specialties.join(' & ')}. Your bio is: "${astrologer.bio}". 
                 You are talking to a user seeking guidance.
@@ -188,9 +188,9 @@ export const ChatPage: React.FC = () => {
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type your message..."
                         className="flex-1 p-3 bg-brand-card border-none rounded-full focus:ring-2 focus:ring-brand-primary focus:outline-none transition"
-                        disabled={isLoading || !chat}
+                        disabled={isLoading}
                     />
-                    <button type="submit" className="p-3 bg-brand-primary text-black rounded-full hover:bg-brand-accent transition-colors shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed" disabled={!input.trim() || isLoading || !chat}>
+                    <button type="submit" className="p-3 bg-brand-primary text-black rounded-full hover:bg-brand-accent transition-colors shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed" disabled={!input.trim() || isLoading}>
                         <SendIcon className="w-6 h-6" />
                     </button>
                 </form>

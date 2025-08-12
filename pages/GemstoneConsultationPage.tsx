@@ -29,8 +29,8 @@ export const GemstoneConsultationPage: React.FC = () => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
         
-        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
             setMessages([
                 { id: Date.now(), text: API_KEY_ERROR_MESSAGE, sender: 'ai' }
             ]);
@@ -53,17 +53,15 @@ export const GemstoneConsultationPage: React.FC = () => {
     const handleSendMessage = async (prompt: string) => {
         if (!prompt.trim() || isLoading) return;
         
-        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
              const userMessage: Message = { id: Date.now(), text: prompt, sender: 'user' };
              const errorMessage: Message = { id: Date.now() + 1, text: API_KEY_ERROR_MESSAGE, sender: 'ai' };
              setMessages(prev => [...prev, userMessage, errorMessage]);
-             setInput('');
              return;
         }
 
         const userMessage: Message = { id: Date.now(), text: prompt, sender: 'user' };
-        setInput('');
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
 
@@ -71,7 +69,7 @@ export const GemstoneConsultationPage: React.FC = () => {
         setMessages(prev => [...prev, { id: aiMessageId, text: '', sender: 'ai', isStreaming: true }]);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
             
             const systemInstruction = `You are 'RatnaRaj', a world-renowned gemologist and astrologer with deep knowledge of gemstone therapy (Ratna Shastra). Your task is to recommend gemstones to users based on their problems or birth details.
 1.  Start by warmly greeting the user and asking them about the specific problems they are facing (e.g., financial, career, relationship, health) OR for their date of birth.
@@ -116,6 +114,7 @@ Your tone is wise, trustworthy, and authoritative, yet caring.`;
     const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
         handleSendMessage(input);
+        setInput('');
     }
 
     return (

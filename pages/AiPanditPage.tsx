@@ -29,8 +29,8 @@ export const AiPanditPage: React.FC = () => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
 
-        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
             setMessages([
                 { id: Date.now(), text: API_KEY_ERROR_MESSAGE, sender: 'ai' }
             ]);
@@ -52,12 +52,11 @@ export const AiPanditPage: React.FC = () => {
 
     const handleSendMessage = async (prompt: string) => {
         if (!prompt.trim() || isLoading) return;
-        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
              const userMessage: Message = { id: Date.now(), text: prompt, sender: 'user' };
              const errorMessage: Message = { id: Date.now() + 1, text: API_KEY_ERROR_MESSAGE, sender: 'ai' };
              setMessages(prev => [...prev, userMessage, errorMessage]);
-             setInput('');
              return;
         }
 
@@ -66,8 +65,7 @@ export const AiPanditPage: React.FC = () => {
             text: prompt,
             sender: 'user',
         };
-        
-        setInput('');
+
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
 
@@ -75,7 +73,7 @@ export const AiPanditPage: React.FC = () => {
         setMessages(prev => [...prev, { id: aiMessageId, text: '', sender: 'ai', isStreaming: true }]);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
             
             const systemInstruction = "You are 'AI Pandit Ganesha', a wise, compassionate, and knowledgeable digital sage. Your purpose is to provide guidance based on Hindu scriptures (Vedas, Upanishads, Puranas, Gita), astrology, and spiritual principles. Your tone should be calm, reassuring, and respectful. Always address the user with warmth, like 'My dear devotee' or 'Child'. Frame your answers in a simple, understandable way, often using analogies or stories. Do not give medical, legal, or financial advice. If asked about sensitive topics, respond with gentle wisdom and guide them towards seeking human experts. Your goal is to enlighten, not to dictate. Format your responses with markdown for better readability, using bolding for key terms and lists for clarity.";
 
@@ -114,6 +112,7 @@ export const AiPanditPage: React.FC = () => {
     const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
         handleSendMessage(input);
+        setInput('');
     }
 
     return (

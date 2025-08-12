@@ -15,7 +15,7 @@ const VASHYAS = ['Dwipad', 'Chatushpad', 'Jalchar', 'Vanachar', 'Keet'] as const
 const NADIS = ['Adi', 'Madhya', 'Antya'] as const;
 const AYANAMSA = ['Lahiri', 'Raman', 'KP'];
 
-const API_KEY_ERROR_MESSAGE = "The 'API_KEY' environment variable was not found. Please ensure it is configured in your deployment environment (e.g., in your Vercel project settings).";
+const API_KEY_ERROR_MESSAGE = "The 'VITE_API_KEY' environment variable was not found. Please ensure it is configured in your deployment environment (e.g., in your Vercel project settings) and has the 'VITE_' prefix to be accessible.";
 
 
 const randomElement = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -135,8 +135,8 @@ const generateYogas = (planetaryPositions: PlanetPosition[]): Yoga[] => {
 };
 
 const getAiInsights = async (baseData: KundliData, formData: KundliFormInput): Promise<Partial<KundliData>> => {
-    if (!process.env.API_KEY) {
-        console.error("API_KEY environment variable not set.");
+    if (!process.env.VITE_API_KEY) {
+        console.error("VITE_API_KEY environment variable not set.");
         return {
             generalCharacteristics: `AI insights could not be generated. ${API_KEY_ERROR_MESSAGE}`,
             predictions: { yearly: [], monthly: [] },
@@ -145,7 +145,7 @@ const getAiInsights = async (baseData: KundliData, formData: KundliFormInput): P
         };
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
     const currentYear = new Date().getFullYear();
     const currentDasha = baseData.vimshottariDasha[0]; // Mock current dasha
@@ -318,14 +318,14 @@ const generateBasicKundliInfo = (formData: KundliFormInput) => {
 };
 
 export const generateMatchmakingReport = async (formData: MatchmakingFormInput): Promise<MatchmakingReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
     
     const boyInfo = generateBasicKundliInfo(formData.boy);
     const girlInfo = generateBasicKundliInfo(formData.girl);
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -415,11 +415,11 @@ export const generateMatchmakingReport = async (formData: MatchmakingFormInput):
 // --- Love Calculator Functions ---
 
 export const generateLoveReport = async (formData: LoveFormInput): Promise<LoveReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -473,11 +473,11 @@ export const generateLoveReport = async (formData: LoveFormInput): Promise<LoveR
 // --- Money Calculator Functions ---
 
 export const generateMoneyReport = async (formData: MoneyFormInput): Promise<MoneyReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -548,8 +548,22 @@ export const generateMoneyReport = async (formData: MoneyFormInput): Promise<Mon
 // --- Laal Kitab Functions ---
 
 export const generateLaalKitabReport = async (formData: LaalKitabFormInput): Promise<LaalKitabReportData> => {
-    if (!process.env.API_KEY) {
-       throw new Error(API_KEY_ERROR_MESSAGE);
+    if (!process.env.VITE_API_KEY) {
+        const currentYear = new Date().getFullYear();
+        const houses = Array.from({length: 12}, (_, i) => i + 1);
+        const kundliChakra: { [key: string]: Planet[] } = {};
+        for (let i = 1; i <= 12; i++) kundliChakra[i] = [];
+        return {
+            introduction: `AI report could not be generated. ${API_KEY_ERROR_MESSAGE}`,
+            kundliChakra,
+            planetaryAnalysis: [],
+            planetStatus: [],
+            ancestralDebts: [],
+            keyPlanets: { benefic: [], malefic: [] },
+            varshphal: { currentYear: currentYear, rulingPlanet: 'Sun', overall: 'Could not generate forecast.', career: '', health: '', relationships: ''},
+            remedies: [],
+            conclusion: "Please configure your API key to proceed."
+        };
     }
     
     // Mock planet distribution for the prompt
@@ -565,7 +579,7 @@ export const generateLaalKitabReport = async (formData: LaalKitabFormInput): Pro
     });
 
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
     const currentYear = new Date().getFullYear();
 
@@ -672,7 +686,17 @@ export const generateLaalKitabReport = async (formData: LaalKitabFormInput): Pro
 
     } catch (error) {
         console.error("Error fetching AI Laal Kitab report:", error);
-        throw new Error("Failed to generate Laal Kitab report from AI.");
+        return {
+            introduction: "Failed to generate AI report.",
+            kundliChakra: kundliChakra,
+            planetaryAnalysis: [],
+            planetStatus: [],
+            ancestralDebts: [],
+            keyPlanets: { benefic: [], malefic: [] },
+            varshphal: { currentYear: currentYear, rulingPlanet: 'Sun', overall: 'Could not generate forecast.', career: '', health: '', relationships: ''},
+            remedies: [],
+            conclusion: "Please try again later."
+        };
     }
 };
 
@@ -711,13 +735,13 @@ const calculateLifePathNumber = (dob: string): number => {
 // --- Life Path Calculator ---
 
 export const generateLifePathReport = async (formData: LifePathFormInput): Promise<LifePathReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
     
     const lifePathNumber = calculateLifePathNumber(formData.dob);
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -766,11 +790,11 @@ export const generateLifePathReport = async (formData: LifePathFormInput): Promi
 // --- Daily Horoscope Functions ---
 
 export const generateDailyHoroscope = async (sign: Rashi): Promise<DailyHoroscopeData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -814,11 +838,11 @@ export const generateDailyHoroscope = async (sign: Rashi): Promise<DailyHoroscop
 
 // --- Numerology Functions ---
 export const generateNumerologyReport = async (formData: NumerologyFormInput): Promise<NumerologyReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -906,15 +930,11 @@ export const getSunSign = (dob: string): { sign: Rashi, dateRange: string } => {
 // --- Muhurat Teller Function ---
 
 export const generateMuhuratReport = async (formData: MuhuratFormInput): Promise<MuhuratReportData> => {
-     if (!process.env.API_KEY) {
-        return {
-            activity: formData.activity,
-            summary: `AI report could not be generated. ${API_KEY_ERROR_MESSAGE}`,
-            muhurats: [],
-        };
+    if (!process.env.VITE_API_KEY) {
+        throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -976,11 +996,11 @@ export const generateMuhuratReport = async (formData: MuhuratFormInput): Promise
 
 // --- Palm Reading Function ---
 export const generatePalmReadingReport = async (base64Image: string): Promise<PalmReadingReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -1054,11 +1074,11 @@ export const generatePalmReadingReport = async (base64Image: string): Promise<Pa
 
 // --- Face Reading Function ---
 export const generateFaceReadingReport = async (base64Image: string): Promise<FaceReadingReportData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const prompt = `
@@ -1122,11 +1142,11 @@ export const generateFaceReadingReport = async (base64Image: string): Promise<Fa
 
 // --- Tarot Reading Function ---
 export const generateTarotReading = async (cards: { card: TarotCardData, position: string }[]): Promise<TarotReadingData> => {
-    if (!process.env.API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         throw new Error(API_KEY_ERROR_MESSAGE);
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
     const model = 'gemini-2.5-flash';
 
     const cardDetails = cards.map(c => `${c.position}: ${c.card.name}`).join(', ');

@@ -29,8 +29,8 @@ export const CustomerSupportPage: React.FC = () => {
         if (hasInitialized.current) return;
         hasInitialized.current = true;
 
-        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I am unable to connect. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
             setMessages([
                 { id: Date.now(), text: API_KEY_ERROR_MESSAGE, sender: 'ai' }
             ]);
@@ -52,17 +52,15 @@ export const CustomerSupportPage: React.FC = () => {
 
     const handleSendMessage = async (prompt: string) => {
         if (!prompt.trim() || isLoading) return;
-        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
-        if (!process.env.API_KEY) {
+        const API_KEY_ERROR_MESSAGE = "I cannot respond. The 'VITE_API_KEY' environment variable is missing. Please configure it in your deployment settings to continue.";
+        if (!process.env.VITE_API_KEY) {
              const userMessage: Message = { id: Date.now(), text: prompt, sender: 'user' };
              const errorMessage: Message = { id: Date.now() + 1, text: API_KEY_ERROR_MESSAGE, sender: 'ai' };
              setMessages(prev => [...prev, userMessage, errorMessage]);
-             setInput('');
              return;
         }
 
         const userMessage: Message = { id: Date.now(), text: prompt, sender: 'user' };
-        setInput('');
         setMessages(prev => [...prev, userMessage]);
         setIsLoading(true);
 
@@ -70,7 +68,7 @@ export const CustomerSupportPage: React.FC = () => {
         setMessages(prev => [...prev, { id: aiMessageId, text: '', sender: 'ai', isStreaming: true }]);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
             
             const systemInstruction = `You are 'AstroHelper', a friendly and efficient customer support agent for the AstroTalk24 app. Your goal is to help users with their questions about the app's services.
             Common topics include:
@@ -112,6 +110,7 @@ export const CustomerSupportPage: React.FC = () => {
     const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
         handleSendMessage(input);
+        setInput('');
     }
 
     return (
